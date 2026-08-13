@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
+from .forms import GameEntryForm, GameForm
+
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -74,3 +76,51 @@ def dashboard_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def add_game_view(request):
+    if request.method == "POST":
+        game_form = GameForm(request.POST, request.FILES)
+        entry_form = GameEntryForm(request.POST)
+
+        if game_form.is_valid() and entry_form.is_valid():
+            game = game_form.save()
+
+            game_entry = entry_form.save(commit=False)
+            game_entry.user = request.user
+            game_entry.game = game
+            game_entry.save()
+
+            messages.success(
+                request,
+                f"{game.title} was added to your library!"
+            )
+
+            return redirect("library")
+
+    else:
+        game_form = GameForm()
+        entry_form = GameEntryForm()
+
+    context = {
+        "game_form": game_form,
+        "entry_form": entry_form,
+    }
+
+    return render(request, "games/add_game.html", context)
+
+
+@login_required
+def library_view(request):
+    game_entries = (
+        request.user.game_entries
+        .select_related("game", "game__genre", "game__platform")
+        .all()
+    )
+
+    return render(
+        request,
+        "games/library.html",
+        {"game_entries": game_entries},
+    )

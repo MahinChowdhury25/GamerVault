@@ -1,0 +1,79 @@
+{% extends "games/base.html" %}
+
+{% block title %}My Library - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <h1>My Game Library 🎮</h1>
+
+    <p>
+        Games in your personal collection:
+        <strong>{{ game_entries|length }}</strong>
+    </p>
+
+    <p>
+        <a href="{% url 'add_game' %}">
+            + Add Game
+        </a>
+    </p>
+
+    {% if game_entries %}
+
+        {% for entry in game_entries %}
+
+            <div class="card" style="margin-top: 20px;">
+
+                <h2>{{ entry.game.title }}</h2>
+
+                {% if entry.game.genre %}
+                    <p>
+                        Genre: {{ entry.game.genre.name }}
+                    </p>
+                {% endif %}
+
+                {% if entry.game.platform %}
+                    <p>
+                        Platform: {{ entry.game.platform.name }}
+                    </p>
+                {% endif %}
+
+                <p>
+                    Status: {{ entry.get_status_display }}
+                </p>
+
+                {% if entry.rating %}
+                    <p>
+                        Rating: {{ entry.rating }}/10
+                    </p>
+                {% endif %}
+
+                <p>
+                    Completion: {{ entry.completion }}%
+                </p>
+
+                {% if entry.review %}
+                    <p>
+                        Review: {{ entry.review }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            Your library is empty.
+            <a href="{% url 'add_game' %}">
+                Add your first game!
+            </a>
+        </p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

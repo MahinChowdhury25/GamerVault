@@ -1,0 +1,33 @@
+{% extends "games/base.html" %}
+
+{% block title %}Add Game - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>Add a Game 🎮</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h2>Game Information</h2>
+
+        {{ game_form.as_p }}
+
+        <h2>Your Information</h2>
+
+        {{ entry_form.as_p }}
+
+        <button type="submit">
+            Add to Library
+        </button>
+    </form>
+
+    <p>
+        <a href="{% url 'library' %}">
+            ← Back to Library
+        </a>
+    </p>
+</div>
+
+{% endblock %}

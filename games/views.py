@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
 from .forms import GameEntryForm, GameForm
+from .models import Genre, Platform
 
 
 def register_view(request):
@@ -115,14 +116,53 @@ def add_game_view(request):
 def library_view(request):
     game_entries = (
         request.user.game_entries
-        .select_related("game", "game__genre", "game__platform")
+        .select_related(
+            "game",
+            "game__genre",
+            "game__platform",
+        )
         .all()
     )
+
+    search_query = request.GET.get("search", "").strip()
+    status_filter = request.GET.get("status", "").strip()
+    genre_filter = request.GET.get("genre", "").strip()
+    platform_filter = request.GET.get("platform", "").strip()
+
+    if search_query:
+        game_entries = game_entries.filter(
+            game__title__icontains=search_query
+        )
+
+    if status_filter:
+        game_entries = game_entries.filter(
+            status=status_filter
+        )
+
+    if genre_filter:
+        game_entries = game_entries.filter(
+            game__genre_id=genre_filter
+        )
+
+    if platform_filter:
+        game_entries = game_entries.filter(
+            game__platform_id=platform_filter
+        )
+
+    context = {
+        "game_entries": game_entries,
+        "search_query": search_query,
+        "status_filter": status_filter,
+        "genre_filter": genre_filter,
+        "platform_filter": platform_filter,
+        "genres": Genre.objects.all(),
+        "platforms": Platform.objects.all(),
+    }
 
     return render(
         request,
         "games/library.html",
-        {"game_entries": game_entries},
+        context,
     )
 
 @login_required

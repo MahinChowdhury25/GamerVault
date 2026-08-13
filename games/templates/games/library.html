@@ -155,6 +155,20 @@
 
             <div class="card" style="margin-top: 20px;">
 
+                {% if entry.game.cover_image %}
+                    <img
+                        src="{{ entry.game.cover_image.url }}"
+                        alt="{{ entry.game.title }} cover"
+                        style="
+                            width: 200px;
+                            height: 280px;
+                            object-fit: cover;
+                            border-radius: 8px;
+                            margin-bottom: 15px;
+                        "
+                    >
+                {% endif %}
+
                 <h2>{{ entry.game.title }}</h2>
 
                 {% if entry.game.genre %}

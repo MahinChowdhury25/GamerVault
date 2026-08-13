@@ -1,0 +1,20 @@
+{% extends "games/base.html" %}
+
+{% block title %}Dashboard - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>Welcome to GameVault 🎮</h1>
+
+    <p>
+        This is your personal game library.
+    </p>
+
+    <p>
+        Logged in as:
+        <strong>{{ user.username }}</strong>
+    </p>
+</div>
+
+{% endblock %}

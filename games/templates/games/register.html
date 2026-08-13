@@ -1,0 +1,34 @@
+{% extends "games/base.html" %}
+
+{% block title %}Register - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>Create your GameVault account</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" required>
+
+        <label>Confirm Password</label>
+        <input type="password" name="password_confirm" required>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+</div>
+
+{% endblock %}

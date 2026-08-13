@@ -4,112 +4,203 @@
 
 {% block content %}
 
-<div class="card">
+<div class="page-header">
 
-    <h1>Welcome to GameVault 🎮</h1>
+    <div>
+        <h1>Welcome back, {{ user.username }}! 🎮</h1>
+        <p>Your GameVault at a glance.</p>
+    </div>
 
-    <p>
-        Welcome back,
-        <strong>{{ user.username }}</strong>!
-    </p>
+    <a href="{% url 'add_game' %}" class="primary-link">
+        + Add Game
+    </a>
 
-    <div style="
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 15px;
-        margin-top: 30px;
-    ">
+</div>
 
-        <div class="card">
-            <h2>🎮</h2>
-            <h2>{{ total_games }}</h2>
-            <p>Total Games</p>
+<!-- Statistics -->
+
+<div class="game-grid">
+
+    <div class="card">
+        <h2>🎮</h2>
+        <h2>{{ total_games }}</h2>
+        <p>Total Games</p>
+    </div>
+
+    <div class="card">
+        <h2>🔵</h2>
+        <h2>{{ playing_count }}</h2>
+        <p>Playing</p>
+    </div>
+
+    <div class="card">
+        <h2>🟢</h2>
+        <h2>{{ completed_count }}</h2>
+        <p>Completed</p>
+    </div>
+
+    <div class="card">
+        <h2>🟡</h2>
+        <h2>{{ wishlist_count }}</h2>
+        <p>Wishlist</p>
+    </div>
+
+    <div class="card">
+        <h2>🔴</h2>
+        <h2>{{ dropped_count }}</h2>
+        <p>Dropped</p>
+    </div>
+
+</div>
+
+<!-- Recently Added -->
+
+<div style="margin-top: 40px;">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Recently Added</h2>
+            <p>Your latest games.</p>
         </div>
 
-        <div class="card">
-            <h2>🔵</h2>
-            <h2>{{ playing_count }}</h2>
-            <p>Playing</p>
-        </div>
-
-        <div class="card">
-            <h2>🟢</h2>
-            <h2>{{ completed_count }}</h2>
-            <p>Completed</p>
-        </div>
-
-        <div class="card">
-            <h2>🟡</h2>
-            <h2>{{ wishlist_count }}</h2>
-            <p>Wishlist</p>
-        </div>
-
-        <div class="card">
-            <h2>🔴</h2>
-            <h2>{{ dropped_count }}</h2>
-            <p>Dropped</p>
-        </div>
+        <a href="{% url 'library' %}">
+            View Full Library →
+        </a>
 
     </div>
 
-    <div class="card" style="margin-top: 30px;">
+    {% if recent_games %}
 
-        <h2>Recently Added</h2>
-
-        {% if recent_games %}
+        <div class="game-grid">
 
             {% for entry in recent_games %}
 
-                <div style="
-                    padding: 15px 0;
-                    border-bottom: 1px solid #374151;
-                ">
+                <div class="game-card">
 
-                    <h3>
-                        {{ entry.game.title }}
-                    </h3>
+                    {% if entry.game.cover_image %}
 
-                    <p>
-                        Status:
-                        {{ entry.get_status_display }}
-                    </p>
+                        <img
+                            src="{{ entry.game.cover_image.url }}"
+                            alt="{{ entry.game.title }} cover"
+                            class="game-cover"
+                        >
 
-                    <p>
-                        Completion:
-                        {{ entry.completion }}%
-                    </p>
+                    {% else %}
+
+                        <div class="game-cover-placeholder">
+                            🎮
+                        </div>
+
+                    {% endif %}
+
+                    <div class="game-info">
+
+                        <h2 class="game-title">
+                            {{ entry.game.title }}
+                        </h2>
+
+                        {% if entry.game.genre %}
+                            <p class="game-meta">
+                                Genre: {{ entry.game.genre.name }}
+                            </p>
+                        {% endif %}
+
+                        {% if entry.game.platform %}
+                            <p class="game-meta">
+                                Platform: {{ entry.game.platform.name }}
+                            </p>
+                        {% endif %}
+
+                        {% if entry.status == "playing" %}
+
+                            <span class="status-badge status-playing">
+                                🔵 Playing
+                            </span>
+
+                        {% elif entry.status == "completed" %}
+
+                            <span class="status-badge status-completed">
+                                🟢 Completed
+                            </span>
+
+                        {% elif entry.status == "wishlist" %}
+
+                            <span class="status-badge status-wishlist">
+                                🟡 Wishlist
+                            </span>
+
+                        {% elif entry.status == "dropped" %}
+
+                            <span class="status-badge status-dropped">
+                                🔴 Dropped
+                            </span>
+
+                        {% endif %}
+
+                        {% if entry.rating %}
+
+                            <p class="rating">
+                                ⭐ {{ entry.rating }}/10
+                            </p>
+
+                        {% endif %}
+
+                        <div class="progress-container">
+
+                            <div class="progress-label">
+                                <span>Completion</span>
+                                <span>{{ entry.completion }}%</span>
+                            </div>
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width: {{ entry.completion }}%;"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="game-actions">
+
+                            <a href="{% url 'edit_game' entry.id %}">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'delete_game' entry.id %}">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             {% endfor %}
 
-        {% else %}
+        </div>
+
+    {% else %}
+
+        <div class="card">
+
+            <h2>Your library is empty</h2>
 
             <p>
-                You haven't added any games yet.
+                Start building your game collection.
             </p>
 
-            <a href="{% url 'add_game' %}">
-                + Add your first game
+            <a href="{% url 'add_game' %}" class="primary-link">
+                + Add Your First Game
             </a>
 
-        {% endif %}
+        </div>
 
-    </div>
-
-    <div style="margin-top: 25px;">
-
-        <a href="{% url 'add_game' %}">
-            + Add Game
-        </a>
-
-        &nbsp;&nbsp;
-
-        <a href="{% url 'library' %}">
-            View My Library
-        </a>
-
-    </div>
+    {% endif %}
 
 </div>
 

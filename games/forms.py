@@ -28,6 +28,16 @@ class GameForm(forms.ModelForm):
             ),
         }
 
+    def clean_title(self):
+        title = self.cleaned_data["title"].strip()
+
+        if not title:
+            raise forms.ValidationError(
+                "Game title cannot be empty."
+            )
+
+        return title
+
 
 class GameEntryForm(forms.ModelForm):
     class Meta:
@@ -61,3 +71,26 @@ class GameEntryForm(forms.ModelForm):
                 }
             ),
         }
+
+    def clean_rating(self):
+        rating = self.cleaned_data.get("rating")
+
+        if rating is not None and not 0 <= rating <= 10:
+            raise forms.ValidationError(
+                "Rating must be between 0 and 10."
+            )
+
+        return rating
+
+    def clean_completion(self):
+        completion = self.cleaned_data.get("completion")
+
+        if completion is None:
+            return 0
+
+        if not 0 <= completion <= 100:
+            raise forms.ValidationError(
+                "Completion must be between 0 and 100."
+            )
+
+        return completion

@@ -4,30 +4,53 @@
 
 {% block content %}
 
+<div class="page-header">
+
+    <div>
+        <h1>Edit {{ game_entry.game.title }} 🎮</h1>
+        <p>Update your game information and progress.</p>
+    </div>
+
+    <a href="{% url 'game_detail' game_entry.id %}">
+        ← Back to Game
+    </a>
+
+</div>
+
 <div class="card">
-    <h1>Edit {{ game_entry.game.title }} 🎮</h1>
 
     <form method="POST" enctype="multipart/form-data">
+
         {% csrf_token %}
+
+        {% if game_form.non_field_errors %}
+            <div class="message">
+                {{ game_form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% if entry_form.non_field_errors %}
+            <div class="message">
+                {{ entry_form.non_field_errors }}
+            </div>
+        {% endif %}
 
         <h2>Game Information</h2>
 
         {{ game_form.as_p }}
 
-        <h2>Your Information</h2>
+        <h2 style="margin-top: 30px;">
+            Your Information
+        </h2>
 
         {{ entry_form.as_p }}
 
         <button type="submit">
             Save Changes
         </button>
+
     </form>
 
-    <p>
-        <a href="{% url 'library' %}">
-            ← Back to Library
-        </a>
-    </p>
 </div>
 
 {% endblock %}

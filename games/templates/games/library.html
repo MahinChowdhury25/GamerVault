@@ -4,222 +4,246 @@
 
 {% block content %}
 
-<div class="card">
+<div class="page-header">
 
-    <h1>My Game Library 🎮</h1>
+    <div>
+        <h1>My Game Library 🎮</h1>
 
-    <p>
-        Games in your personal collection:
-        <strong>{{ game_entries|length }}</strong>
-    </p>
-
-    <p>
-        <a href="{% url 'add_game' %}">
-            + Add Game
-        </a>
-    </p>
-
-    <!-- Search and Filters -->
-    <div class="card" style="margin-top: 20px;">
-
-        <h2>Search & Filter</h2>
-
-        <form method="GET">
-
-            <label for="search">
-                Search by game title
-            </label>
-
-            <input
-                type="text"
-                id="search"
-                name="search"
-                placeholder="Search games..."
-                value="{{ search_query }}"
-            >
-
-            <label for="status">
-                Status
-            </label>
-
-            <select
-                id="status"
-                name="status"
-                style="width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px;"
-            >
-                <option value="">
-                    All Statuses
-                </option>
-
-                <option
-                    value="wishlist"
-                    {% if status_filter == "wishlist" %}selected{% endif %}
-                >
-                    Wishlist
-                </option>
-
-                <option
-                    value="playing"
-                    {% if status_filter == "playing" %}selected{% endif %}
-                >
-                    Playing
-                </option>
-
-                <option
-                    value="completed"
-                    {% if status_filter == "completed" %}selected{% endif %}
-                >
-                    Completed
-                </option>
-
-                <option
-                    value="dropped"
-                    {% if status_filter == "dropped" %}selected{% endif %}
-                >
-                    Dropped
-                </option>
-            </select>
-
-            <label for="genre">
-                Genre
-            </label>
-
-            <select
-                id="genre"
-                name="genre"
-                style="width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px;"
-            >
-                <option value="">
-                    All Genres
-                </option>
-
-                {% for genre in genres %}
-                    <option
-                        value="{{ genre.id }}"
-                        {% if genre_filter == genre.id|stringformat:"s" %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ genre.name }}
-                    </option>
-                {% endfor %}
-
-            </select>
-
-            <label for="platform">
-                Platform
-            </label>
-
-            <select
-                id="platform"
-                name="platform"
-                style="width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px;"
-            >
-                <option value="">
-                    All Platforms
-                </option>
-
-                {% for platform in platforms %}
-                    <option
-                        value="{{ platform.id }}"
-                        {% if platform_filter == platform.id|stringformat:"s" %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ platform.name }}
-                    </option>
-                {% endfor %}
-
-            </select>
-
-            <button type="submit">
-                Apply Filters
-            </button>
-
-            <a
-                href="{% url 'library' %}"
-                style="margin-left: 10px;"
-            >
-                Clear Filters
-            </a>
-
-        </form>
-
+        <p>
+            {% if game_entries %}
+                Showing <strong>{{ game_entries|length }}</strong> game(s)
+            {% else %}
+                No games found
+            {% endif %}
+        </p>
     </div>
 
-    <!-- Game List -->
+    <a href="{% url 'add_game' %}" class="primary-link">
+        + Add Game
+    </a>
 
-    {% if game_entries %}
+</div>
+
+<!-- Search and Filters -->
+
+<div class="card filter-card">
+
+    <h2>Search & Filter</h2>
+
+    <form method="GET">
+
+        <label for="search">
+            Search by game title
+        </label>
+
+        <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Search games..."
+            value="{{ search_query }}"
+        >
+
+        <label for="status">
+            Status
+        </label>
+
+        <select id="status" name="status">
+            <option value="">
+                All Statuses
+            </option>
+
+            <option
+                value="wishlist"
+                {% if status_filter == "wishlist" %}selected{% endif %}
+            >
+                Wishlist
+            </option>
+
+            <option
+                value="playing"
+                {% if status_filter == "playing" %}selected{% endif %}
+            >
+                Playing
+            </option>
+
+            <option
+                value="completed"
+                {% if status_filter == "completed" %}selected{% endif %}
+            >
+                Completed
+            </option>
+
+            <option
+                value="dropped"
+                {% if status_filter == "dropped" %}selected{% endif %}
+            >
+                Dropped
+            </option>
+        </select>
+
+        <label for="genre">
+            Genre
+        </label>
+
+        <select id="genre" name="genre">
+            <option value="">
+                All Genres
+            </option>
+
+            {% for genre in genres %}
+                <option
+                    value="{{ genre.id }}"
+                    {% if genre_filter == genre.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ genre.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="platform">
+            Platform
+        </label>
+
+        <select id="platform" name="platform">
+            <option value="">
+                All Platforms
+            </option>
+
+            {% for platform in platforms %}
+                <option
+                    value="{{ platform.id }}"
+                    {% if platform_filter == platform.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ platform.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">
+            Apply Filters
+        </button>
+
+        <a
+            href="{% url 'library' %}"
+            style="margin-left: 10px;"
+        >
+            Clear Filters
+        </a>
+
+    </form>
+
+</div>
+
+<!-- Game Cards -->
+
+{% if game_entries %}
+
+    <div class="game-grid">
 
         {% for entry in game_entries %}
 
-            <div class="card" style="margin-top: 20px;">
+            <div class="game-card">
 
                 {% if entry.game.cover_image %}
+
                     <img
                         src="{{ entry.game.cover_image.url }}"
                         alt="{{ entry.game.title }} cover"
-                        style="
-                            width: 200px;
-                            height: 280px;
-                            object-fit: cover;
-                            border-radius: 8px;
-                            margin-bottom: 15px;
-                        "
+                        class="game-cover"
                     >
+
+                {% else %}
+
+                    <div class="game-cover-placeholder">
+                        🎮
+                    </div>
+
                 {% endif %}
 
-                <h2>{{ entry.game.title }}</h2>
+                <div class="game-info">
 
-                {% if entry.game.genre %}
-                    <p>
-                        Genre:
-                        {{ entry.game.genre.name }}
-                    </p>
-                {% endif %}
+                    <h2 class="game-title">
+                        {{ entry.game.title }}
+                    </h2>
 
-                {% if entry.game.platform %}
-                    <p>
-                        Platform:
-                        {{ entry.game.platform.name }}
-                    </p>
-                {% endif %}
+                    {% if entry.game.genre %}
+                        <p class="game-meta">
+                            Genre: {{ entry.game.genre.name }}
+                        </p>
+                    {% endif %}
 
-                <p>
-                    Status:
-                    {{ entry.get_status_display }}
-                </p>
+                    {% if entry.game.platform %}
+                        <p class="game-meta">
+                            Platform: {{ entry.game.platform.name }}
+                        </p>
+                    {% endif %}
 
-                {% if entry.rating %}
-                    <p>
-                        Rating:
-                        {{ entry.rating }}/10
-                    </p>
-                {% endif %}
+                    {% if entry.status == "playing" %}
 
-                <p>
-                    Completion:
-                    {{ entry.completion }}%
-                </p>
+                        <span class="status-badge status-playing">
+                            🔵 Playing
+                        </span>
 
-                {% if entry.review %}
-                    <p>
-                        Review:
-                        {{ entry.review }}
-                    </p>
-                {% endif %}
+                    {% elif entry.status == "completed" %}
 
-                <div style="margin-top: 15px;">
+                        <span class="status-badge status-completed">
+                            🟢 Completed
+                        </span>
 
-                    <a href="{% url 'edit_game' entry.id %}">
-                        Edit
-                    </a>
+                    {% elif entry.status == "wishlist" %}
 
-                    |
+                        <span class="status-badge status-wishlist">
+                            🟡 Wishlist
+                        </span>
 
-                    <a href="{% url 'delete_game' entry.id %}">
-                        Delete
-                    </a>
+                    {% elif entry.status == "dropped" %}
+
+                        <span class="status-badge status-dropped">
+                            🔴 Dropped
+                        </span>
+
+                    {% endif %}
+
+                    {% if entry.rating %}
+                        <p class="rating">
+                            ⭐ {{ entry.rating }}/10
+                        </p>
+                    {% endif %}
+
+                    <div class="progress-container">
+
+                        <div class="progress-label">
+                            <span>Completion</span>
+                            <span>{{ entry.completion }}%</span>
+                        </div>
+
+                        <div class="progress-bar">
+
+                            <div
+                                class="progress-fill"
+                                style="width: {{ entry.completion }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="game-actions">
+
+                        <a href="{% url 'edit_game' entry.id %}">
+                            Edit
+                        </a>
+
+                        <a href="{% url 'delete_game' entry.id %}">
+                            Delete
+                        </a>
+
+                    </div>
 
                 </div>
 
@@ -227,22 +251,24 @@
 
         {% endfor %}
 
-    {% else %}
+    </div>
 
-        <div class="card" style="margin-top: 20px;">
+{% else %}
 
-            <p>
-                No games were found.
-            </p>
+    <div class="card" style="margin-top: 25px;">
 
-            <a href="{% url 'library' %}">
-                Clear Filters
-            </a>
+        <h2>No games found</h2>
 
-        </div>
+        <p>
+            Try changing your filters or add a new game to your library.
+        </p>
 
-    {% endif %}
+        <a href="{% url 'add_game' %}" class="primary-link">
+            + Add Game
+        </a>
 
-</div>
+    </div>
+
+{% endif %}
 
 {% endblock %}

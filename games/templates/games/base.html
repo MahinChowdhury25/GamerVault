@@ -18,52 +18,248 @@
             color: #f9fafb;
         }
 
+        a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
+            gap: 20px;
+            padding: 18px 40px;
             background: #1f2937;
+            border-bottom: 1px solid #374151;
         }
 
-        nav a {
-            color: #f9fafb;
-            text-decoration: none;
-            margin-left: 20px;
+        .nav-brand {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
         }
 
         .container {
-            width: min(1100px, 90%);
+            width: min(1200px, 92%);
             margin: 40px auto;
         }
 
         .card {
             background: #1f2937;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
+            border: 1px solid #374151;
         }
 
-        input {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 12px;
             margin-top: 8px;
             margin-bottom: 15px;
-            border: none;
+            border: 1px solid #4b5563;
             border-radius: 6px;
+            background: #111827;
+            color: #f9fafb;
         }
 
         button {
-            padding: 12px 20px;
+            padding: 11px 18px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #1d4ed8;
         }
 
         .message {
             padding: 12px;
             margin-bottom: 15px;
-            background: #7f1d1d;
+            background: #14532d;
+            border: 1px solid #166534;
             border-radius: 6px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .page-header h1 {
+            margin: 0;
+        }
+
+        .primary-link {
+            display: inline-block;
+            padding: 11px 18px;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .primary-link:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 22px;
+            margin-top: 25px;
+        }
+
+        .game-card {
+            overflow: hidden;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+        }
+
+        .game-cover {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+            background: #111827;
+        }
+
+        .game-cover-placeholder {
+            width: 100%;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111827;
+            color: #6b7280;
+            font-size: 50px;
+        }
+
+        .game-info {
+            padding: 18px;
+        }
+
+        .game-title {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .game-meta {
+            color: #d1d5db;
+            font-size: 14px;
+            margin: 6px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-playing {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        .status-completed {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .status-wishlist {
+            background: #713f12;
+            color: #fef08a;
+        }
+
+        .status-dropped {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        .rating {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            margin-top: 12px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #d1d5db;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #374151;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 999px;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .game-actions a {
+            font-size: 14px;
+        }
+
+        .filter-card {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                padding: 16px 20px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .game-cover,
+            .game-cover-placeholder {
+                height: 280px;
+            }
         }
     </style>
 </head>
@@ -71,17 +267,17 @@
 <body>
 
 <nav>
-    <div>
-        <strong>🎮 GameVault</strong>
-    </div>
+    <a href="{% url 'dashboard' %}" class="nav-brand">
+        🎮 GameVault
+    </a>
 
-    <div>
+    <div class="nav-links">
         {% if user.is_authenticated %}
-    <span>Hello, {{ user.username }}</span>
-    <a href="{% url 'dashboard' %}">Dashboard</a>
-    <a href="{% url 'library' %}">My Library</a>
-    <a href="{% url 'add_game' %}">Add Game</a>
-    <a href="{% url 'logout' %}">Logout</a>
+            <span>Hello, {{ user.username }}</span>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'library' %}">My Library</a>
+            <a href="{% url 'add_game' %}">Add Game</a>
+            <a href="{% url 'logout' %}">Logout</a>
         {% else %}
             <a href="{% url 'login' %}">Login</a>
             <a href="{% url 'register' %}">Register</a>

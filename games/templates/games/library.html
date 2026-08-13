@@ -59,6 +59,20 @@
                     </p>
                 {% endif %}
 
+                <div style="margin-top: 15px;">
+
+                    <a href="{% url 'edit_game' entry.id %}">
+                        Edit
+                    </a>
+
+                    |
+
+                    <a href="{% url 'delete_game' entry.id %}">
+                        Delete
+                    </a>
+
+                </div>
+
             </div>
 
         {% endfor %}

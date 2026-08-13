@@ -124,3 +124,77 @@ def library_view(request):
         "games/library.html",
         {"game_entries": game_entries},
     )
+
+@login_required
+def edit_game_view(request, entry_id):
+    game_entry = request.user.game_entries.select_related(
+        "game"
+    ).filter(id=entry_id).first()
+
+    if game_entry is None:
+        messages.error(request, "Game not found.")
+        return redirect("library")
+
+    if request.method == "POST":
+        game_form = GameForm(
+            request.POST,
+            request.FILES,
+            instance=game_entry.game,
+        )
+
+        entry_form = GameEntryForm(
+            request.POST,
+            instance=game_entry,
+        )
+
+        if game_form.is_valid() and entry_form.is_valid():
+            game_form.save()
+            entry_form.save()
+
+            messages.success(
+                request,
+                f"{game_entry.game.title} was updated successfully!"
+            )
+
+            return redirect("library")
+
+    else:
+        game_form = GameForm(instance=game_entry.game)
+        entry_form = GameEntryForm(instance=game_entry)
+
+    context = {
+        "game_form": game_form,
+        "entry_form": entry_form,
+        "game_entry": game_entry,
+    }
+
+    return render(request, "games/edit_game.html", context)
+
+
+@login_required
+def delete_game_view(request, entry_id):
+    game_entry = request.user.game_entries.select_related(
+        "game"
+    ).filter(id=entry_id).first()
+
+    if game_entry is None:
+        messages.error(request, "Game not found.")
+        return redirect("library")
+
+    if request.method == "POST":
+        game_title = game_entry.game.title
+
+        game_entry.delete()
+
+        messages.success(
+            request,
+            f"{game_title} was removed from your library."
+        )
+
+        return redirect("library")
+
+    return render(
+        request,
+        "games/delete_game.html",
+        {"game_entry": game_entry},
+    )

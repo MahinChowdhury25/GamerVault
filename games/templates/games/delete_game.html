@@ -1,0 +1,31 @@
+{% extends "games/base.html" %}
+
+{% block title %}Delete Game - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <h1>Remove Game</h1>
+
+    <p>
+        Are you sure you want to remove
+        <strong>{{ game_entry.game.title }}</strong>
+        from your library?
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <button type="submit">
+            Yes, Remove Game
+        </button>
+
+        <a href="{% url 'library' %}">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

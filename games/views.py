@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
 from .forms import GameEntryForm, GameForm
-from .models import Genre, Platform
+from .models import Game, GameEntry, Genre, Platform
 
 
 def register_view(request):
@@ -125,8 +125,45 @@ def add_game_view(request):
         entry_form = GameEntryForm(request.POST)
 
         if game_form.is_valid() and entry_form.is_valid():
-            game = game_form.save()
+            title = game_form.cleaned_data["title"]
 
+            # Look for an existing game with the same title.
+            existing_game = (
+                Game.objects
+                .filter(title__iexact=title)
+                .first()
+            )
+
+            if existing_game:
+                # Check whether this user already has this game.
+                already_added = GameEntry.objects.filter(
+                    user=request.user,
+                    game=existing_game,
+                ).exists()
+
+                if already_added:
+                    messages.error(
+                        request,
+                        f"{existing_game.title} is already in your library."
+                    )
+
+                    return render(
+                        request,
+                        "games/add_game.html",
+                        {
+                            "game_form": game_form,
+                            "entry_form": entry_form,
+                        },
+                    )
+
+                # Reuse the existing shared Game.
+                game = existing_game
+
+            else:
+                # Create a completely new Game.
+                game = game_form.save()
+
+            # Create the user's personal library entry.
             game_entry = entry_form.save(commit=False)
             game_entry.user = request.user
             game_entry.game = game
@@ -148,7 +185,11 @@ def add_game_view(request):
         "entry_form": entry_form,
     }
 
-    return render(request, "games/add_game.html", context)
+    return render(
+        request,
+        "games/add_game.html",
+        context,
+    )
 
 
 @login_required

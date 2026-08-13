@@ -206,6 +206,30 @@ def library_view(request):
 
 
 @login_required
+def game_detail_view(request, entry_id):
+    game_entry = (
+        request.user.game_entries
+        .select_related(
+            "game",
+            "game__genre",
+            "game__platform",
+        )
+        .filter(id=entry_id)
+        .first()
+    )
+
+    if game_entry is None:
+        messages.error(request, "Game not found.")
+        return redirect("library")
+
+    return render(
+        request,
+        "games/game_detail.html",
+        {"game_entry": game_entry},
+    )
+
+
+@login_required
 def edit_game_view(request, entry_id):
     game_entry = request.user.game_entries.select_related(
         "game"

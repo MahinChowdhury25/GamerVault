@@ -1,0 +1,207 @@
+{% extends "games/base.html" %}
+
+{% block title %}{{ game_entry.game.title }} - GameVault{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>{{ game_entry.game.title }}</h1>
+        <p>Game details and your personal progress.</p>
+    </div>
+
+    <a href="{% url 'library' %}">
+        ← Back to Library
+    </a>
+
+</div>
+
+<div class="game-detail-layout">
+
+    <!-- Cover -->
+
+    <div class="card">
+
+        {% if game_entry.game.cover_image %}
+
+            <img
+                src="{{ game_entry.game.cover_image.url }}"
+                alt="{{ game_entry.game.title }} cover"
+                style="
+                    width: 100%;
+                    max-height: 500px;
+                    object-fit: cover;
+                    border-radius: 10px;
+                    display: block;
+                "
+            >
+
+        {% else %}
+
+            <div
+                class="game-cover-placeholder"
+                style="
+                    height: 500px;
+                    border-radius: 10px;
+                "
+            >
+                🎮
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Details -->
+
+    <div>
+
+        <!-- Basic Information -->
+
+        <div class="card">
+
+            <h2>{{ game_entry.game.title }}</h2>
+
+            {% if game_entry.game.genre %}
+                <p class="game-meta">
+                    <strong>Genre:</strong>
+                    {{ game_entry.game.genre.name }}
+                </p>
+            {% endif %}
+
+            {% if game_entry.game.platform %}
+                <p class="game-meta">
+                    <strong>Platform:</strong>
+                    {{ game_entry.game.platform.name }}
+                </p>
+            {% endif %}
+
+            {% if game_entry.status == "playing" %}
+
+                <span class="status-badge status-playing">
+                    🔵 Playing
+                </span>
+
+            {% elif game_entry.status == "completed" %}
+
+                <span class="status-badge status-completed">
+                    🟢 Completed
+                </span>
+
+            {% elif game_entry.status == "wishlist" %}
+
+                <span class="status-badge status-wishlist">
+                    🟡 Wishlist
+                </span>
+
+            {% elif game_entry.status == "dropped" %}
+
+                <span class="status-badge status-dropped">
+                    🔴 Dropped
+                </span>
+
+            {% endif %}
+
+            {% if game_entry.rating %}
+
+                <p class="rating">
+                    ⭐ {{ game_entry.rating }}/10
+                </p>
+
+            {% endif %}
+
+            <div class="progress-container">
+
+                <div class="progress-label">
+                    <span>Completion</span>
+                    <span>{{ game_entry.completion }}%</span>
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width: {{ game_entry.completion }}%;"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Description -->
+
+        {% if game_entry.game.description %}
+
+            <div
+                class="card"
+                style="margin-top: 20px;"
+            >
+
+                <h2>About the Game</h2>
+
+                <p>
+                    {{ game_entry.game.description }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Personal Review -->
+
+        {% if game_entry.review %}
+
+            <div
+                class="card"
+                style="margin-top: 20px;"
+            >
+
+                <h2>Your Review</h2>
+
+                <p>
+                    {{ game_entry.review }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Actions -->
+
+        <div
+            class="card"
+            style="
+                margin-top: 20px;
+                display: flex;
+                gap: 15px;
+                flex-wrap: wrap;
+            "
+        >
+
+            <a
+                href="{% url 'edit_game' game_entry.id %}"
+                class="primary-link"
+            >
+                Edit Game
+            </a>
+
+            <a
+                href="{% url 'delete_game' game_entry.id %}"
+            >
+                Delete Game
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

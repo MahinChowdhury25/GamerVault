@@ -5,6 +5,7 @@ from .views import (
     dashboard_view,
     delete_game_view,
     edit_game_view,
+    game_detail_view,
     library_view,
     login_view,
     logout_view,
@@ -19,6 +20,12 @@ urlpatterns = [
 
     path("library/", library_view, name="library"),
     path("library/add/", add_game_view, name="add_game"),
+
+    path(
+        "library/<int:entry_id>/",
+        game_detail_view,
+        name="game_detail",
+    ),
 
     path(
         "library/<int:entry_id>/edit/",

@@ -72,133 +72,128 @@
 
     {% if recent_games %}
 
-        <div class="game-grid">
+    <div class="game-grid">
 
-            {% for entry in recent_games %}
+        {% for entry in recent_games %}
 
-                <div class="game-card">
+        <div class="game-card">
 
-                    {% if entry.game.cover_image %}
+            {% if entry.game.cover_image %}
 
-                        <img
-                            src="{{ entry.game.cover_image.url }}"
-                            alt="{{ entry.game.title }} cover"
-                            class="game-cover"
-                        >
+            <img src="{{ entry.game.cover_image.url }}" alt="{{ entry.game.title }} cover" class="game-cover">
 
-                    {% else %}
+            {% else %}
 
-                        <div class="game-cover-placeholder">
-                            🎮
-                        </div>
+            <div class="game-cover-placeholder">
+                🎮
+            </div>
 
-                    {% endif %}
+            {% endif %}
 
-                    <div class="game-info">
+            <div class="game-info">
 
-                        <h2 class="game-title">
-                            {{ entry.game.title }}
-                        </h2>
+                <h2 class="game-title">
+                    <a href="{% url 'game_detail' entry.id %}">
+                        {{ entry.game.title }}
+                    </a>
+                </h2>
 
-                        {% if entry.game.genre %}
-                            <p class="game-meta">
-                                Genre: {{ entry.game.genre.name }}
-                            </p>
-                        {% endif %}
+                {% if entry.game.genre %}
+                <p class="game-meta">
+                    Genre: {{ entry.game.genre.name }}
+                </p>
+                {% endif %}
 
-                        {% if entry.game.platform %}
-                            <p class="game-meta">
-                                Platform: {{ entry.game.platform.name }}
-                            </p>
-                        {% endif %}
+                {% if entry.game.platform %}
+                <p class="game-meta">
+                    Platform: {{ entry.game.platform.name }}
+                </p>
+                {% endif %}
 
-                        {% if entry.status == "playing" %}
+                {% if entry.status == "playing" %}
 
-                            <span class="status-badge status-playing">
-                                🔵 Playing
-                            </span>
+                <span class="status-badge status-playing">
+                    🔵 Playing
+                </span>
 
-                        {% elif entry.status == "completed" %}
+                {% elif entry.status == "completed" %}
 
-                            <span class="status-badge status-completed">
-                                🟢 Completed
-                            </span>
+                <span class="status-badge status-completed">
+                    🟢 Completed
+                </span>
 
-                        {% elif entry.status == "wishlist" %}
+                {% elif entry.status == "wishlist" %}
 
-                            <span class="status-badge status-wishlist">
-                                🟡 Wishlist
-                            </span>
+                <span class="status-badge status-wishlist">
+                    🟡 Wishlist
+                </span>
 
-                        {% elif entry.status == "dropped" %}
+                {% elif entry.status == "dropped" %}
 
-                            <span class="status-badge status-dropped">
-                                🔴 Dropped
-                            </span>
+                <span class="status-badge status-dropped">
+                    🔴 Dropped
+                </span>
 
-                        {% endif %}
+                {% endif %}
 
-                        {% if entry.rating %}
+                {% if entry.rating %}
 
-                            <p class="rating">
-                                ⭐ {{ entry.rating }}/10
-                            </p>
+                <p class="rating">
+                    ⭐ {{ entry.rating }}/10
+                </p>
 
-                        {% endif %}
+                {% endif %}
 
-                        <div class="progress-container">
+                <div class="progress-container">
 
-                            <div class="progress-label">
-                                <span>Completion</span>
-                                <span>{{ entry.completion }}%</span>
-                            </div>
+                    <div class="progress-label">
+                        <span>Completion</span>
+                        <span>{{ entry.completion }}%</span>
+                    </div>
 
-                            <div class="progress-bar">
+                    <div class="progress-bar">
 
-                                <div
-                                    class="progress-fill"
-                                    style="width: {{ entry.completion }}%;"
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="game-actions">
-
-                            <a href="{% url 'edit_game' entry.id %}">
-                                Edit
-                            </a>
-
-                            <a href="{% url 'delete_game' entry.id %}">
-                                Delete
-                            </a>
-
-                        </div>
+                        <div class="progress-fill" style="width: {{ entry.completion }}%;"></div>
 
                     </div>
 
                 </div>
 
-            {% endfor %}
+                <div class="game-actions">
+
+                    <a href="{% url 'edit_game' entry.id %}">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'delete_game' entry.id %}">
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
 
         </div>
+
+        {% endfor %}
+
+    </div>
 
     {% else %}
 
-        <div class="card">
+    <div class="card">
 
-            <h2>Your library is empty</h2>
+        <h2>Your library is empty</h2>
 
-            <p>
-                Start building your game collection.
-            </p>
+        <p>
+            Start building your game collection.
+        </p>
 
-            <a href="{% url 'add_game' %}" class="primary-link">
-                + Add Your First Game
-            </a>
+        <a href="{% url 'add_game' %}" class="primary-link">
+            + Add Your First Game
+        </a>
 
-        </div>
+    </div>
 
     {% endif %}
 

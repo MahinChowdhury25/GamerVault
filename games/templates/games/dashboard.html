@@ -5,16 +5,112 @@
 {% block content %}
 
 <div class="card">
+
     <h1>Welcome to GameVault 🎮</h1>
 
     <p>
-        This is your personal game library.
+        Welcome back,
+        <strong>{{ user.username }}</strong>!
     </p>
 
-    <p>
-        Logged in as:
-        <strong>{{ user.username }}</strong>
-    </p>
+    <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+    ">
+
+        <div class="card">
+            <h2>🎮</h2>
+            <h2>{{ total_games }}</h2>
+            <p>Total Games</p>
+        </div>
+
+        <div class="card">
+            <h2>🔵</h2>
+            <h2>{{ playing_count }}</h2>
+            <p>Playing</p>
+        </div>
+
+        <div class="card">
+            <h2>🟢</h2>
+            <h2>{{ completed_count }}</h2>
+            <p>Completed</p>
+        </div>
+
+        <div class="card">
+            <h2>🟡</h2>
+            <h2>{{ wishlist_count }}</h2>
+            <p>Wishlist</p>
+        </div>
+
+        <div class="card">
+            <h2>🔴</h2>
+            <h2>{{ dropped_count }}</h2>
+            <p>Dropped</p>
+        </div>
+
+    </div>
+
+    <div class="card" style="margin-top: 30px;">
+
+        <h2>Recently Added</h2>
+
+        {% if recent_games %}
+
+            {% for entry in recent_games %}
+
+                <div style="
+                    padding: 15px 0;
+                    border-bottom: 1px solid #374151;
+                ">
+
+                    <h3>
+                        {{ entry.game.title }}
+                    </h3>
+
+                    <p>
+                        Status:
+                        {{ entry.get_status_display }}
+                    </p>
+
+                    <p>
+                        Completion:
+                        {{ entry.completion }}%
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                You haven't added any games yet.
+            </p>
+
+            <a href="{% url 'add_game' %}">
+                + Add your first game
+            </a>
+
+        {% endif %}
+
+    </div>
+
+    <div style="margin-top: 25px;">
+
+        <a href="{% url 'add_game' %}">
+            + Add Game
+        </a>
+
+        &nbsp;&nbsp;
+
+        <a href="{% url 'library' %}">
+            View My Library
+        </a>
+
+    </div>
+
 </div>
 
 {% endblock %}

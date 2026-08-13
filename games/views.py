@@ -69,14 +69,53 @@ def login_view(request):
     return render(request, "games/login.html")
 
 
-@login_required
-def dashboard_view(request):
-    return render(request, "games/dashboard.html")
-
-
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def dashboard_view(request):
+    game_entries = request.user.game_entries.all()
+
+    total_games = game_entries.count()
+
+    playing_count = game_entries.filter(
+        status="playing"
+    ).count()
+
+    completed_count = game_entries.filter(
+        status="completed"
+    ).count()
+
+    wishlist_count = game_entries.filter(
+        status="wishlist"
+    ).count()
+
+    dropped_count = game_entries.filter(
+        status="dropped"
+    ).count()
+
+    recent_games = game_entries.select_related(
+        "game",
+        "game__genre",
+        "game__platform",
+    )[:5]
+
+    context = {
+        "total_games": total_games,
+        "playing_count": playing_count,
+        "completed_count": completed_count,
+        "wishlist_count": wishlist_count,
+        "dropped_count": dropped_count,
+        "recent_games": recent_games,
+    }
+
+    return render(
+        request,
+        "games/dashboard.html",
+        context,
+    )
 
 
 @login_required
@@ -164,6 +203,7 @@ def library_view(request):
         "games/library.html",
         context,
     )
+
 
 @login_required
 def edit_game_view(request, entry_id):
